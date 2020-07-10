@@ -13,3 +13,8 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+void MainWindow::on_pushButton_clicked()
+{
+    QMessageBox::information(this, "Message", "Button was clicked!", QMessageBox::Ok);
+}
