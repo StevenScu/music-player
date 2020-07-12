@@ -6,25 +6,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>841</width>
+    <height>588</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QListView" name="listView">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>240</y>
-      <width>151</width>
-      <height>71</height>
+      <x>290</x>
+      <y>200</y>
+      <width>256</width>
+      <height>192</height>
      </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
     </property>
    </widget>
   </widget>
@@ -33,18 +30,25 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>841</width>
      <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTesting">
     <property name="title">
-     <string>Testing</string>
+     <string>Test</string>
     </property>
+    <addaction name="separator"/>
+    <addaction name="actionAdd_File"/>
    </widget>
    <addaction name="menuTesting"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionAdd_File">
+   <property name="text">
+    <string>Add File</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

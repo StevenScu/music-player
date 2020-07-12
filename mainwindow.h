@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMessageBox>
+#include <QFileDialog>
+#include <QMediaPlayer>
 
 #include <QMainWindow>
 
@@ -18,9 +20,12 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
+
+    void on_actionAdd_File_triggered();
 
 private:
     Ui::MainWindow *ui;
+    QMediaPlayer *musicPlayer;
+
 };
 #endif // MAINWINDOW_H
