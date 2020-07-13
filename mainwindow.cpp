@@ -12,11 +12,14 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete musicPlayer;
+    delete library;
 }
 
-void MainWindow::on_actionAdd_File_triggered()
+void MainWindow::on_actionAdd_Music_triggered()
 {
     //QMessageBox::information(this, "Message", "Button was clicked!", QMessageBox::Ok);
     //file_name will hold the path of the file
     QString file_name = QFileDialog::getOpenFileName(this, "Choose Your Music File", "C://");
+    new QListWidgetItem(tr(file_name.toStdString().c_str()), ui->musicList);
 }

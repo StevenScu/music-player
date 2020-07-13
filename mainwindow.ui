@@ -6,47 +6,42 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>841</width>
-    <height>588</height>
+    <width>884</width>
+    <height>552</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QListView" name="listView">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>200</y>
-      <width>256</width>
-      <height>192</height>
-     </rect>
-    </property>
-   </widget>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QListWidget" name="musicList"/>
+    </item>
+   </layout>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>841</width>
+     <width>884</width>
      <height>20</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuTesting">
+   <widget class="QMenu" name="menuAddMusic">
     <property name="title">
-     <string>Test</string>
+     <string>Options</string>
     </property>
     <addaction name="separator"/>
-    <addaction name="actionAdd_File"/>
+    <addaction name="actionAdd_Music"/>
    </widget>
-   <addaction name="menuTesting"/>
+   <addaction name="menuAddMusic"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionAdd_File">
+  <action name="actionAdd_Music">
    <property name="text">
-    <string>Add File</string>
+    <string>Add Music</string>
    </property>
   </action>
  </widget>

@@ -4,8 +4,9 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QMediaPlayer>
-
 #include <QMainWindow>
+#include <QListWidget>
+#include "libraryinfo.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,11 +22,12 @@ public:
 
 private slots:
 
-    void on_actionAdd_File_triggered();
+    void on_actionAdd_Music_triggered();
 
 private:
     Ui::MainWindow *ui;
     QMediaPlayer *musicPlayer;
+    LibraryInfo *library;
 
 };
 #endif // MAINWINDOW_H
