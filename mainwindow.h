@@ -23,11 +23,14 @@ public:
 private slots:
 
     void on_actionAdd_Music_triggered();
+    void on_actionChange_Default_Directory_triggered();
+    void on_musicList_destroyed();
 
 private:
     Ui::MainWindow *ui;
     QMediaPlayer *musicPlayer;
     LibraryInfo *library;
+    QString beginningDirectory;
 
 };
 #endif // MAINWINDOW_H

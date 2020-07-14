@@ -36,12 +36,18 @@
     </property>
     <addaction name="separator"/>
     <addaction name="actionAdd_Music"/>
+    <addaction name="actionChange_Default_Directory"/>
    </widget>
    <addaction name="menuAddMusic"/>
   </widget>
   <action name="actionAdd_Music">
    <property name="text">
     <string>Add Music</string>
+   </property>
+  </action>
+  <action name="actionChange_Default_Directory">
+   <property name="text">
+    <string>Change Default Directory</string>
    </property>
   </action>
  </widget>
