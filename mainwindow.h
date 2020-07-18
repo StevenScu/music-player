@@ -21,6 +21,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    QString extractTitle(std::string songLocation);
 
 private slots:
 
@@ -41,12 +42,13 @@ private slots:
 
     void on_playButton_clicked();
 
+
 private:
     Ui::MainWindow *ui;
     QMediaPlayer *musicPlayer;
-    LibraryInfo *library;
-    QString beginningDirectory;
 
+    LibraryInfo library;
+    QString beginningDirectory;
 };
 
 #endif // MAINWINDOW_H

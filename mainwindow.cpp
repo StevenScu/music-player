@@ -10,9 +10,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(musicPlayer, &QMediaPlayer::positionChanged, this, &MainWindow::on_positionChanged);
     connect(musicPlayer, &QMediaPlayer::durationChanged, this, &MainWindow::on_durationChanged);
 
+    //setupList();          need to use library to setup list when the program starts. is library setup here?
 
-    beginningDirectory = "C://";
-    QPixmap albumPic("C:\\Users\\steve\\Deezloader Music\\Ween\\Ween - The Mollusk\\ween-mollusk-1499786118-640x640.jpg");
+    beginningDirectory = QDir::rootPath();
+    QPixmap albumPic("C:\\Users\\steve\\Deezloader Music\\Ween\\Ween - The Mollusk\\cover.jpg");
     albumPic = albumPic.scaled(ui->albumCover->width(), ui->albumCover->height());
     ui->albumCover->setPixmap(albumPic);
 }
@@ -21,16 +22,16 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete musicPlayer;
-    delete library;
 }
 
 void MainWindow::on_actionAdd_Music_triggered()
 {
-    //QMessageBox::information(this, "Message", "Button was clicked!", QMessageBox::Ok);
     QStringList files = QFileDialog::getOpenFileNames(this, "Select Your Music", beginningDirectory);
     while(!files.empty())
     {
-        new QListWidgetItem(tr(files.first().toStdString().c_str()), ui->musicList);
+        std::string fileName = files.first().toStdString();
+        new QListWidgetItem(tr(fileName.c_str()), ui->musicList);   //adds a new item on the list
+        library.addSong(fileName);                                  //adds the song to the library
         files.pop_front();
     }
 }
@@ -54,6 +55,8 @@ void MainWindow::on_musicList_itemDoubleClicked(QListWidgetItem *item)
     musicPlayer->setMedia(QUrl::fromLocalFile(item->text()));
     musicPlayer->setVolume(ui->volumeSlider->value());
     musicPlayer->play();
+
+    ui->songPlayingLabel->setText(extractTitle(item->text().toStdString()));
 }
 
 void MainWindow::on_volumeSlider_sliderMoved(int position)
@@ -93,4 +96,20 @@ void MainWindow::on_pauseButton_clicked()
 void MainWindow::on_playButton_clicked()
 {
     musicPlayer->play();
+}
+
+QString MainWindow::extractTitle(std::string songLocation)
+{
+    std::ifstream songTxt(songLocation);
+    std::string temp;
+    QString songTitle="";
+    std::getline(songTxt, temp);
+    int titleStart = temp.find("TIT2");          //this is where the title is stored
+    titleStart+=4;                               //skip 'TIT2'
+    int titleEnd = temp.find("TPE1");
+    songTitle = QString::fromStdString(temp.substr(titleStart, titleEnd-titleStart));
+    while(songTitle.at(0).digitValue() != 65533)  //a character this value appears before the title
+        songTitle.remove(0,1);
+    songTitle.remove(0,1);                      //remove the extra character
+    return songTitle;
 }
