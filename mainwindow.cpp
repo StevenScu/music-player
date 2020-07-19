@@ -29,8 +29,11 @@ void MainWindow::on_actionAdd_Music_triggered()
     while(!files.empty())
     {
         std::string fileName = files.first().toStdString();
-        new QListWidgetItem(tr(fileName.c_str()), ui->musicList);   //adds a new item on the list
-        library.addSong(fileName);                                  //adds the song to the library
+        if(!library.songInFile(fileName))
+        {
+            new QListWidgetItem(tr(fileName.c_str()), ui->musicList);   //adds a new item on the list if not on already
+            library.addSong(fileName);                                  //adds the song to the library
+        }
         files.pop_front();
     }
 }
@@ -57,13 +60,15 @@ void MainWindow::on_musicList_itemDoubleClicked(QListWidgetItem *item)
     musicPlayer->play();
 
     //Display the saved album cover
-    QString coverLocation = QString::fromStdString(library.getCoverLocationFromTitle((item->text()).toStdString()));
+    SongInfo currentSong = library.getSongInfoFromTitle(item->text().toStdString());
+    QString coverLocation = QString::fromStdString(currentSong.getCoverLocation());
     QPixmap albumPic(coverLocation);
     albumPic = albumPic.scaled(ui->albumCover->width(), ui->albumCover->height());
     ui->albumCover->setPixmap(albumPic);
 
     //Put the song info under the album cover
-    //ui->songPlayingLabel->setText(extractTitle(item->text().toStdString()));
+    ui->songPlayingLabel->setText(QString::fromStdString(currentSong.getSongTitle()));
+    ui->artistInfoLabel->setText(QString::fromStdString(currentSong.getArtist() + " - " + currentSong.getAlbum()));
 }
 
 void MainWindow::on_volumeSlider_sliderMoved(int position)

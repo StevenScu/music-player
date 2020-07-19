@@ -18,12 +18,15 @@ LibraryInfo::~LibraryInfo()
 
 void LibraryInfo::addSong(std::string newSong)
 {
-    songList.push_back({newSong,"","", newSong,0});           //MUST CHANGE
+    if(!songInFile(newSong))
+    {
+        songList.push_back({newSong,"","", newSong,0});         //MUST CHANGE
 
-    std::ofstream library;                                  //adding song to the file
-    library.open("library.txt", std::ios::app);
-    library << newSong << std::endl;
-    library.close();
+        std::ofstream library;                                  //adding song to the file
+        library.open("library.txt", std::ios::app);
+        library << newSong << std::endl;
+        library.close();
+    }
 }
 
 unsigned int LibraryInfo::getSongCount()
@@ -39,14 +42,14 @@ SongInfo LibraryInfo::getSongInfo(unsigned int songNumber)
 }
 
 //Qt will save the songs by title only, so we will use that to get the cover location
-std::string LibraryInfo::getCoverLocationFromTitle(std::string songTitle)
+SongInfo LibraryInfo::getSongInfoFromTitle(std::string songTitle)
 {
     for(unsigned int i = 0; i < songList.size(); i++)
     {
         if(songList[i].getSongTitle() == songTitle)
-            return songList[i].getCoverLocation();
+            return songList[i];
     }
-    return "";
+    return SongInfo();
 }
 
 void LibraryInfo::initializeLibrary(std::ifstream &library)
@@ -62,6 +65,28 @@ void LibraryInfo::createDefaultLibrary()
     std::ofstream newLibrary;
     newLibrary.open("library.txt");
     newLibrary.close();
+}
+
+bool LibraryInfo::songInFile(std::string songPath)
+{
+    std::ifstream infile;
+    infile.open("library.txt");
+    if(infile.fail())
+    {
+        infile.close();
+        return false;
+    }
+    std::string temp;
+    while(std::getline(infile, temp))
+    {
+        if(temp == songPath)
+        {
+            infile.close();
+            return true;
+        }
+    }
+    infile.close();
+    return false;
 }
 
 SongInfo::SongInfo()

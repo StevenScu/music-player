@@ -33,7 +33,8 @@ public:
     void addSong(std::string newSong);
     unsigned int getSongCount();
     SongInfo getSongInfo(unsigned int songNumber);           //songNumber is useless unless looped through
-    std::string getCoverLocationFromTitle(std::string songTitle);
+    SongInfo getSongInfoFromTitle(std::string songTitle);
+    bool songInFile(std::string songPath);
 
 private:
     std::vector<SongInfo> songList;
