@@ -18,7 +18,7 @@ LibraryInfo::~LibraryInfo()
 
 void LibraryInfo::addSong(std::string newSong)
 {
-    songList.push_back({newSong,"","", newSong});           //MUST CHANGE
+    songList.push_back({newSong,"","", newSong,0});           //MUST CHANGE
 
     std::ofstream library;                                  //adding song to the file
     library.open("library.txt", std::ios::app);
@@ -26,11 +26,34 @@ void LibraryInfo::addSong(std::string newSong)
     library.close();
 }
 
+unsigned int LibraryInfo::getSongCount()
+{
+    return songList.size();
+}
+
+SongInfo LibraryInfo::getSongInfo(unsigned int songNumber)
+{
+    if(songNumber < songList.size() && songNumber >= 0)
+        return songList[songNumber];
+    return SongInfo();                               //return an empty song if none found
+}
+
+//Qt will save the songs by title only, so we will use that to get the cover location
+std::string LibraryInfo::getCoverLocationFromTitle(std::string songTitle)
+{
+    for(unsigned int i = 0; i < songList.size(); i++)
+    {
+        if(songList[i].getSongTitle() == songTitle)
+            return songList[i].getCoverLocation();
+    }
+    return "";
+}
+
 void LibraryInfo::initializeLibrary(std::ifstream &library)
 {
     std::string temp;
     while(std::getline(library, temp))                        //song title, album, artist, song location
-        songList.push_back({temp,"","", temp});               //MUST CHANGE
+        songList.push_back({temp,"","", temp, 0});               //MUST CHANGE
 }
 
 //Creates a library file if it did not exist
@@ -41,12 +64,23 @@ void LibraryInfo::createDefaultLibrary()
     newLibrary.close();
 }
 
-SongInfo::SongInfo(std::string songTitle, std::string album, std::string artist, std::string songLocation)
+SongInfo::SongInfo()
+{
+    _songTitle = "Title";
+    _album = "Album";
+    _artist = "Artist";
+    _songLocation = "Song Location";
+    _trackNumber = 0;
+}
+
+SongInfo::SongInfo(std::string songTitle, std::string album, std::string artist,
+                   std::string songLocation, unsigned int trackNumber)
 {
     _songTitle = songTitle;
     _album = album;
     _artist = artist;
     _songLocation = songLocation;
+    _trackNumber = trackNumber;
 }
 
 std::string SongInfo::getSongTitle()
@@ -69,10 +103,16 @@ std::string SongInfo::getSongLocation()
     return _songLocation;
 }
 
+unsigned int SongInfo::getTrackNumber()
+{
+    return _trackNumber;
+}
+
 std::string SongInfo::getCoverLocation()
 {
     std::string coverLocation = _songLocation;
-    while(coverLocation[coverLocation.length()-1] != '\\')
+    //Remove the song's info in the file path
+    while(coverLocation[coverLocation.length()-1] != '/')
         coverLocation.pop_back();
     coverLocation += "cover.jpg";
     return coverLocation;

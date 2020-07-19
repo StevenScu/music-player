@@ -32,11 +32,10 @@ private slots:
     void on_musicList_itemDoubleClicked(QListWidgetItem *item);
 
     void on_volumeSlider_sliderMoved(int position);
-
     void on_songProgress_sliderMoved(int position);
+
     void on_durationChanged(qint64 position);
     void on_positionChanged(qint64 position);
-    //void on_volumeChanged(int volume);
 
     void on_pauseButton_clicked();
 
@@ -46,9 +45,10 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QMediaPlayer *musicPlayer;
-
     LibraryInfo library;
     QString beginningDirectory;
+
+    void setupList();
 };
 
 #endif // MAINWINDOW_H

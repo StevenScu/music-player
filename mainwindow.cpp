@@ -4,18 +4,17 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , library()           //need to read songs from the file so that we can add them in setupList
 {
     ui->setupUi(this);
     musicPlayer = new QMediaPlayer(this);
     connect(musicPlayer, &QMediaPlayer::positionChanged, this, &MainWindow::on_positionChanged);
     connect(musicPlayer, &QMediaPlayer::durationChanged, this, &MainWindow::on_durationChanged);
 
-    //setupList();          need to use library to setup list when the program starts. is library setup here?
+    setupList();          //need to use library to setup list when the program starts. is library setup here?
 
     beginningDirectory = QDir::rootPath();
-    QPixmap albumPic("C:\\Users\\steve\\Deezloader Music\\Ween\\Ween - The Mollusk\\cover.jpg");
-    albumPic = albumPic.scaled(ui->albumCover->width(), ui->albumCover->height());
-    ui->albumCover->setPixmap(albumPic);
+
 }
 
 MainWindow::~MainWindow()
@@ -52,11 +51,19 @@ void MainWindow::on_musicList_destroyed()
 
 void MainWindow::on_musicList_itemDoubleClicked(QListWidgetItem *item)
 {
+    //Play the selected song at the current volume
     musicPlayer->setMedia(QUrl::fromLocalFile(item->text()));
     musicPlayer->setVolume(ui->volumeSlider->value());
     musicPlayer->play();
 
-    ui->songPlayingLabel->setText(extractTitle(item->text().toStdString()));
+    //Display the saved album cover
+    QString coverLocation = QString::fromStdString(library.getCoverLocationFromTitle((item->text()).toStdString()));
+    QPixmap albumPic(coverLocation);
+    albumPic = albumPic.scaled(ui->albumCover->width(), ui->albumCover->height());
+    ui->albumCover->setPixmap(albumPic);
+
+    //Put the song info under the album cover
+    //ui->songPlayingLabel->setText(extractTitle(item->text().toStdString()));
 }
 
 void MainWindow::on_volumeSlider_sliderMoved(int position)
@@ -83,11 +90,6 @@ void MainWindow::on_positionChanged(qint64 position)
     ui->positionLabel->setText(QString::number(seconds));
 }
 
-//void MainWindow::on_volumeChanged(int volume)
-//{
-
-//}
-
 void MainWindow::on_pauseButton_clicked()
 {
     musicPlayer->pause();
@@ -98,18 +100,8 @@ void MainWindow::on_playButton_clicked()
     musicPlayer->play();
 }
 
-QString MainWindow::extractTitle(std::string songLocation)
+void MainWindow::setupList()
 {
-    std::ifstream songTxt(songLocation);
-    std::string temp;
-    QString songTitle="";
-    std::getline(songTxt, temp);
-    int titleStart = temp.find("TIT2");          //this is where the title is stored
-    titleStart+=4;                               //skip 'TIT2'
-    int titleEnd = temp.find("TPE1");
-    songTitle = QString::fromStdString(temp.substr(titleStart, titleEnd-titleStart));
-    while(songTitle.at(0).digitValue() != 65533)  //a character this value appears before the title
-        songTitle.remove(0,1);
-    songTitle.remove(0,1);                      //remove the extra character
-    return songTitle;
+    for(unsigned int i = 0; i < library.getSongCount(); i++)
+        new QListWidgetItem(tr(library.getSongInfo(i).getSongTitle().c_str()), ui->musicList);   //adds a new item on the list
 }
