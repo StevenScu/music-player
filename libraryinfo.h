@@ -15,13 +15,13 @@ struct SongInfo
     std::string getSongLocation();
     std::string getCoverLocation();    //uses songLocation to find
     unsigned int getTrackNumber();
+
 private:
     std::string _songTitle;
     std::string _album;
     std::string _artist;
     std::string _songLocation;
     unsigned int _trackNumber;
-
 };
 
 class LibraryInfo

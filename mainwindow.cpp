@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     setupList();          //need to use library to setup list when the program starts. is library setup here?
 
     beginningDirectory = QDir::rootPath();
+
 }
 
 MainWindow::~MainWindow()
@@ -50,7 +51,7 @@ void MainWindow::on_musicList_destroyed()
 
 void MainWindow::on_musicList_itemDoubleClicked(QListWidgetItem *item)
 {
-    //Play the selected song at the current volyme
+    //Play the selected song at the current volume
     musicPlayer->setMedia(QUrl::fromLocalFile(item->text()));
     musicPlayer->setVolume(ui->volumeSlider->value());
     musicPlayer->play();

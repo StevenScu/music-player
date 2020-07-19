@@ -21,6 +21,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    QString extractTitle(std::string songLocation);
 
 private slots:
 
@@ -37,6 +38,7 @@ private slots:
     void on_positionChanged(qint64 position);
 
     void on_pauseButton_clicked();
+
     void on_playButton_clicked();
 
 
