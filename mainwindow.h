@@ -8,6 +8,7 @@
 #include <QListWidget>
 #include <QPixmap>
 #include <string>
+#include <iomanip>
 #include "libraryinfo.h"
 
 QT_BEGIN_NAMESPACE
@@ -21,7 +22,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    QString extractTitle(std::string songLocation);
 
 private slots:
 
