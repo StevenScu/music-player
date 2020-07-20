@@ -68,7 +68,9 @@ void MainWindow::on_musicList_itemDoubleClicked(QListWidgetItem *item)
 
     //Put the song info under the album cover
     ui->songPlayingLabel->setText(QString::fromStdString(currentSong.getSongTitle()));
-    ui->artistInfoLabel->setText(QString::fromStdString(currentSong.getArtist() + " - " + currentSong.getAlbum()));
+    ui->artistInfoLabel->setText(QString::fromStdString(currentSong.getArtist()));
+    if(currentSong.getAlbum() != "")                    //only display if there is an album
+        ui->artistInfoLabel->setText(QString::fromStdString(" - " + currentSong.getAlbum()));
 }
 
 void MainWindow::on_volumeSlider_sliderMoved(int position)
@@ -90,9 +92,26 @@ void MainWindow::on_durationChanged(qint64 position)
 
 void MainWindow::on_positionChanged(qint64 position)
 {
+    //Calculate the hours, minutes, and seconds elapsed into ints
     ui->songProgress->setValue(position);                   //move the song to the new position
-    int seconds = position / 1000.0 + 0.5;                  //position is in milliseconds
-    ui->positionLabel->setText(QString::number(seconds));
+    int elapsedTime = position / 1000.0 + 0.5;              //position is in milliseconds
+    int seconds = elapsedTime % 60;
+    int minutes = (elapsedTime / 60) % 60;                  //will display 0-59, then switch to 0 again
+    int hours = elapsedTime / (60*60);                      //hours will grow for as long as needed
+
+    //Convert these ints to QString so that we can display them
+    QString finalDisplay = "";
+    if(hours > 0)
+        finalDisplay += QString::number(hours) + ":";
+    QString minutesDisplay = QString::number(minutes);
+    if(minutes < 10)                                        //always keep the time at a width of two (00)
+        minutesDisplay = '0' + minutesDisplay;
+    QString secondsDisplay = QString::number(seconds);
+    if(seconds < 10)
+        secondsDisplay = '0' + secondsDisplay;
+    finalDisplay += minutesDisplay + ":" + secondsDisplay;
+
+    ui->positionLabel->setText(finalDisplay);
 }
 
 void MainWindow::on_pauseButton_clicked()

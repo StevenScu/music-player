@@ -8,6 +8,7 @@
 #include <QListWidget>
 #include <QPixmap>
 #include <string>
+#include <iomanip>
 #include "libraryinfo.h"
 
 QT_BEGIN_NAMESPACE
