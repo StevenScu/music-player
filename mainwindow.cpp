@@ -129,3 +129,13 @@ void MainWindow::setupList()
     for(unsigned int i = 0; i < library.getSongCount(); i++)
         new QListWidgetItem(tr(library.getSongInfo(i).getSongTitle().c_str()), ui->musicList);   //adds a new item on the list
 }
+
+void MainWindow::on_actionQ_A_triggered()
+{
+    QMessageBox messageBox;
+    QString message = "Q: How do you add album art?\n"
+                      "A: In the folder for that album, add a jpg called 'cover' that contains your art.\n\n"
+                      "";
+    messageBox.setText(message);
+    messageBox.exec();
+}

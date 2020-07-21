@@ -42,6 +42,8 @@ private slots:
     void on_playButton_clicked();
 
 
+    void on_actionQ_A_triggered();
+
 private:
     Ui::MainWindow *ui;
     QMediaPlayer *musicPlayer;
