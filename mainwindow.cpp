@@ -54,13 +54,13 @@ void MainWindow::on_musicList_destroyed()
 
 void MainWindow::on_musicList_itemDoubleClicked(QListWidgetItem *item)
 {
+    SongInfo currentSong = library.getSongInfoFromTitle(item->text().toStdString());
     //Play the selected song at the current volume
-    musicPlayer->setMedia(QUrl::fromLocalFile(item->text()));
+    musicPlayer->setMedia(QUrl::fromLocalFile(QString::fromStdString(currentSong.getSongLocation())));
     musicPlayer->setVolume(ui->volumeSlider->value());
     musicPlayer->play();
 
     //Display the saved album cover
-    SongInfo currentSong = library.getSongInfoFromTitle(item->text().toStdString());
     QString coverLocation = QString::fromStdString(currentSong.getCoverLocation());
     QPixmap albumPic(coverLocation);
     albumPic = albumPic.scaled(ui->albumCover->width(), ui->albumCover->height());
@@ -126,7 +126,8 @@ void MainWindow::on_playButton_clicked()
 
 void MainWindow::setupList()
 {
-    for(unsigned int i = 0; i < library.getSongCount(); i++)
+    unsigned int songCount = library.getSongCount();
+    for(unsigned int i = 0; i < songCount; i++)
         new QListWidgetItem(tr(library.getSongInfo(i).getSongTitle().c_str()), ui->musicList);   //adds a new item on the list
 }
 
