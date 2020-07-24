@@ -14,6 +14,7 @@ public:
     void addSong(std::string newSong);
     unsigned int getSongCount();
     SongInfo getSongInfo(unsigned int songNumber);           //songNumber is useless unless looped through
+    SongInfo getSongInfoFromLocation(std::string songLocation);
     SongInfo getSongInfoFromTitle(std::string songTitle);
     bool songInFile(std::string songPath);
 

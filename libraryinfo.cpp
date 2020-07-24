@@ -20,7 +20,7 @@ void LibraryInfo::addSong(std::string newSong)
 {
     if(!songInFile(newSong))
     {
-        songList.push_back({extractSongTitle(newSong),"","", newSong,0});         //MUST CHANGE
+        songList.push_back({extractSongTitle(newSong),extractAlbum(newSong),extractArtist(newSong), newSong, extractTrackNumber(newSong)});
 
         std::ofstream library;                                  //adding song to the file
         library.open("library.txt", std::ios::app);
@@ -41,6 +41,17 @@ SongInfo LibraryInfo::getSongInfo(unsigned int songNumber)
     return SongInfo();                               //return an empty song if none found
 }
 
+SongInfo LibraryInfo::getSongInfoFromLocation(std::string songLocation)
+{
+    unsigned int songListSize = songList.size();
+    for(unsigned int i = 0; i < songListSize; i++)
+    {
+        if(songList[i].getSongLocation() == songLocation)
+            return songList[i];
+    }
+    return SongInfo();
+}
+
 //Qt will save the songs by title only, so we will use that to get the cover location
 SongInfo LibraryInfo::getSongInfoFromTitle(std::string songTitle)
 {
@@ -57,7 +68,7 @@ void LibraryInfo::initializeLibrary(std::ifstream &library)
 {
     std::string temp;
     while(std::getline(library, temp))                        //song title, album, artist, song location, song number
-        songList.push_back({extractSongTitle(temp),"","", temp, 0});               //MUST CHANGE
+        songList.push_back({extractSongTitle(temp),extractAlbum(temp),extractArtist(temp), temp, extractTrackNumber(temp)});
 }
 
 //Creates a library file if it did not exist

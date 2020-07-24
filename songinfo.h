@@ -23,9 +23,11 @@ private:
     unsigned int _trackNumber;
 };
 
+std::string extractData(std::string songLocation, std::string sectionStart, std::string sectionEnd);
 std::string extractSongTitle(std::string songLocation);
+std::string extractArtist(std::string songLocation);
 std::string extractAlbum(std::string songLocation);
-std::string extractTrackNumber(std::string songLocation);
+unsigned int extractTrackNumber(std::string songLocation);
 
 
 #endif // SONGINFO_H

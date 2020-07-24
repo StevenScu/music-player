@@ -54,44 +54,61 @@ std::string SongInfo::getCoverLocation()
     return coverLocation;
 }
 
-std::string extractSongTitle(std::string songLocation)
+std::string extractData(std::string songLocation, std::string sectionStart, std::string sectionEnd)
 {
     std::ifstream inFile;
     inFile.open(songLocation);
 
     std::string entireLine;
-    std::string songTitle="";
+    std::string wantedData="";
     getline(inFile, entireLine);
     inFile.close();
 
-    //Begin by looking for the 0xfe chacracter that marks text in mp3
+    //Remove the unneeded data before the data that will be displayed
+    if(entireLine.find(sectionStart) == -1)
+        return "[Song in unsupported format]";
+    entireLine = entireLine.substr(entireLine.find(sectionStart));
+
+    //Begin by looking for the 0xfe character that marks sections in mp3
     char check = 0xfe;
     while(entireLine.length()>1 && entireLine[0] != check)
         entireLine.erase(0,1);
     entireLine.erase(0,1);
-    if(entireLine.find("TPE1") == -1)             //If this is not in the line, it is not the standard mp3 format
-        return "[Title not found]";
+    if(entireLine.find(sectionEnd) == -1)             //If this is not in the line, it is not the standard mp3 format
+        return "[Song in unsupported format]";
     else
-        entireLine = entireLine.substr(0, entireLine.find("TPE1"));
+        entireLine = entireLine.substr(0, entireLine.find(sectionEnd));
 
     //Remove all null characters
     unsigned int entireLineLength = entireLine.length();
     for(unsigned int i = 0; i < entireLineLength - 1; i++)
     {
         if(entireLine[i] != '\0')
-            songTitle+=entireLine[i];
+            wantedData+=entireLine[i];
     }
-    return songTitle;
+    return wantedData;
+}
+
+std::string extractSongTitle(std::string songLocation)
+{
+    return extractData(songLocation, "TIT2", "TPE1");   //the title is marked by TIT2. the next section is marked by TPE1
+}
+
+std::string extractArtist(std::string songLocation)
+{
+    //Artists are between TPE1 and TXXX OR A R T I S T S and TALB
+    return extractData(songLocation, "TPE1", "TXXX");
 }
 
 std::string extractAlbum(std::string songLocation)
 {
-    std::string album;
-    return album;
+    return extractData(songLocation, "TALB", "TPE2");
 }
 
-std::string extractTrackNumber(std::string songLocation)
+unsigned int extractTrackNumber(std::string songLocation)
 {
-    std::string trackNumber;
-    return trackNumber;
+    std::string trackNumberString = extractData(songLocation, "TRCK", "TPOS");
+    if(trackNumberString[0] == '[')
+        return 0;
+    return stoi(trackNumberString);
 }
