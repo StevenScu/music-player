@@ -1,5 +1,3 @@
-//Last Changed 7/19 2 AM
-
 /**
   Issues:
   1. Not include duplicate songs
