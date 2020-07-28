@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 
+const std::string ERROR_MESSAGE = "[Info not found]";
+
 struct SongInfo
 {
     SongInfo();

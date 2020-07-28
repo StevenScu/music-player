@@ -66,7 +66,7 @@ std::string extractData(std::string songLocation, std::string sectionStart, std:
 
     //Remove the unneeded data before the data that will be displayed
     if(entireLine.find(sectionStart) == -1)
-        return "[Song in unsupported format]";
+        return ERROR_MESSAGE;
     entireLine = entireLine.substr(entireLine.find(sectionStart));
 
     //Begin by looking for the 0xfe character that marks sections in mp3
@@ -75,7 +75,7 @@ std::string extractData(std::string songLocation, std::string sectionStart, std:
         entireLine.erase(0,1);
     entireLine.erase(0,1);
     if(entireLine.find(sectionEnd) == -1)             //If this is not in the line, it is not the standard mp3 format
-        return "[Song in unsupported format]";
+        return ERROR_MESSAGE;
     else
         entireLine = entireLine.substr(0, entireLine.find(sectionEnd));
 
