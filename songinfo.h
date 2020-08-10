@@ -9,7 +9,8 @@ const std::string ERROR_MESSAGE = "[Info not found]";
 struct SongInfo
 {
     SongInfo();
-    SongInfo(std::string songTitle, std::string album, std::string artist, std::string songLocation, unsigned int trackNumber);
+    SongInfo(std::string songTitle, std::string album, std::string artist,
+             std::string songLocation, unsigned int trackNumber);
     std::string getSongTitle();
     std::string getAlbum();
     std::string getArtist();

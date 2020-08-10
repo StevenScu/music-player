@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QMediaPlayer>
+#include <QMediaPlaylist>
 #include <QMainWindow>
 #include <QListWidget>
 #include <QPixmap>
@@ -30,6 +31,7 @@ private slots:
     void on_musicList_destroyed();
 
     void on_musicList_itemDoubleClicked(QListWidgetItem *item);
+    void on_currentIndexChanged(int index);         //Activates when playlist changes songs
 
     void on_volumeSlider_sliderMoved(int position);
     void on_songProgress_sliderMoved(int position);
@@ -47,6 +49,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QMediaPlayer *musicPlayer;
+    QMediaPlaylist *musicPlaylist;
     LibraryInfo library;
     QString beginningDirectory;
 

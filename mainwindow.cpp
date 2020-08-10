@@ -11,7 +11,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(musicPlayer, &QMediaPlayer::positionChanged, this, &MainWindow::on_positionChanged);
     connect(musicPlayer, &QMediaPlayer::durationChanged, this, &MainWindow::on_durationChanged);
 
-    setupList();          //need to use library to setup list when the program starts. is library setup here?
+    musicPlaylist = new QMediaPlaylist;
+    connect(musicPlaylist, &QMediaPlaylist::currentIndexChanged, this, &MainWindow::on_currentIndexChanged);
+
+    setupList();
 
     beginningDirectory = QDir::rootPath();
 
@@ -31,10 +34,9 @@ void MainWindow::on_actionAdd_Music_triggered()
         std::string fileName = files.first().toStdString();
         if(!library.songInFile(fileName))
         {
-            library.addSong(fileName);                                  //adds the song to the library
-            SongInfo currentSong = library.getSongInfoFromLocation(fileName);
-            std::string itemToAdd = (std::to_string(currentSong.getTrackNumber()) + ". " + currentSong.getSongTitle());
-            new QListWidgetItem(tr(itemToAdd.c_str()), ui->musicList);   //adds a new item on the list if not on already
+            library.addSong(fileName);  //adds the song to the library
+            ui->musicList->clear();     //will remake list with new song (to sort and add new albums)
+            setupList();                //simply re-displays the songs; does not go back into files
         }
         files.pop_front();
     }
@@ -61,8 +63,16 @@ void MainWindow::on_musicList_itemDoubleClicked(QListWidgetItem *item)
     std::string songTitle = stringWithNumber.substr(stringWithNumber.find(" ")).erase(0,1); //remove the number using the added space
     SongInfo currentSong = library.getSongInfoFromTitle(songTitle);
 
-    //Play the selected song at the current volume
-    musicPlayer->setMedia(QUrl::fromLocalFile(QString::fromStdString(currentSong.getSongLocation())));
+    //Add the songs from the selected album into the playlist
+    musicPlaylist->clear();
+    std::vector<SongInfo> album = library.getAlbumFromAlbumTitle(currentSong.getAlbum());
+    unsigned int albumLength = album.size();
+    for(unsigned int i = 0; i < albumLength; i++)
+        musicPlaylist->addMedia(QUrl(QString::fromStdString(album[i].getSongLocation())));
+
+    //Play the album at the selected song at the current volume
+    musicPlayer->setPlaylist(musicPlaylist);
+    musicPlaylist->setCurrentIndex(currentSong.getTrackNumber() - 1);       //index starts at 0
     musicPlayer->setVolume(ui->volumeSlider->value());
     musicPlayer->play();
 
@@ -75,6 +85,21 @@ void MainWindow::on_musicList_itemDoubleClicked(QListWidgetItem *item)
     //Put the song info under the album cover
     ui->songPlayingLabel->setText(QString::fromStdString(currentSong.getSongTitle()));
     ui->artistInfoLabel->setText(QString::fromStdString(currentSong.getArtist() + " - " + currentSong.getAlbum()));
+}
+
+void MainWindow::on_currentIndexChanged(int index)
+{
+    if(ui->songPlayingLabel->text() != "")              //This will be needed for the first song selected
+    {
+        //Get the new song based on the new index of the playlist
+        SongInfo previousSong = library.getSongInfoFromTitle(ui->songPlayingLabel->text().toStdString());
+        SongInfo thisSong = library.getAlbumFromAlbumTitle(previousSong.getAlbum())[index];
+
+        //Change the song info to the new info
+        //This will be in the same album, but the artist might differ, so must change
+        ui->songPlayingLabel->setText(QString::fromStdString(thisSong.getSongTitle()));
+        ui->artistInfoLabel->setText(QString::fromStdString(thisSong.getArtist() + " - " + thisSong.getAlbum()));
+    }
 }
 
 void MainWindow::on_volumeSlider_sliderMoved(int position)
@@ -130,11 +155,15 @@ void MainWindow::on_playButton_clicked()
 
 void MainWindow::setupList()
 {
-    unsigned int songCount = library.getSongCount();
-    for(unsigned int i = 0; i < songCount; i++)
+    unsigned int albumCount = library.getAlbumCount();
+    for(unsigned int i = 0; i < albumCount; i++)
     {
-        std::string itemToAdd = (std::to_string(library.getSongInfo(i).getTrackNumber()) + ". " + library.getSongInfo(i).getSongTitle());
-        new QListWidgetItem(tr(itemToAdd.c_str()), ui->musicList);   //adds a new item on the list
+        unsigned int songCount = library.getSongCountInAlbum(i);
+        for(unsigned int j = 0; j < songCount; j++)
+        {
+            std::string itemToAdd = (std::to_string(library.getSongInfo(i,j).getTrackNumber()) + ". " + library.getSongInfo(i,j).getSongTitle());
+            new QListWidgetItem(tr(itemToAdd.c_str()), ui->musicList);   //adds a new item on the list
+        }
     }
 }
 
